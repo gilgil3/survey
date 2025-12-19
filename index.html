@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스마트폰 및 AI 활용 습관 설문조사</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f3f4f6; }
+        .radio-label { cursor: pointer; transition: all 0.2s ease; }
+        .radio-input:checked + .radio-circle { background-color: #3b82f6; border-color: #3b82f6; color: white; transform: scale(1.1); }
+        .radio-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #e5e7eb; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #6b7280; transition: all 0.2s; }
+        @media (max-width: 640px) { .radio-circle { width: 32px; height: 32px; font-size: 0.8rem; } }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-blue-600 text-white py-8 shadow-lg">
+        <div class="container mx-auto px-4 max-w-3xl text-center">
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">
+                <i class="fa-solid fa-mobile-screen-button mr-2"></i>스마트폰 및 AI 활용 설문조사
+            </h1>
+            <p class="text-blue-100 text-sm md:text-base">여러분의 디지털 기기 사용 습관과 인식을 알아보기 위한 설문입니다.</p>
+            <a href="admin.html" class="inline-block mt-4 text-xs text-blue-200 hover:text-white underline">관리자(결과보기) 페이지로 이동</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-3xl">
+        <form id="surveyForm" class="bg-white rounded-xl shadow-md p-6 md:p-10 space-y-8">
+            <section class="space-y-6 border-b pb-8 border-gray-100">
+                <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                    <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm">1</span>
+                    기본 정보
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="studentId" class="block text-sm font-medium text-gray-700 mb-1">학번</label>
+                        <input type="text" id="studentId" name="studentId" required placeholder="예: 1101" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">이름</label>
+                        <input type="text" id="name" name="name" required placeholder="홍길동" 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+                </div>
+                <div>
+                    <label for="usageTime" class="block text-sm font-medium text-gray-700 mb-1">하루 평균 스마트폰 사용 시간</label>
+                    <input type="text" id="usageTime" name="usageTime" required placeholder="예: 3시간 30분" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                </div>
+            </section>
+
+            <section class="space-y-8">
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <h2 class="text-lg font-bold text-blue-800 mb-1 flex items-center">
+                        <span class="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-2 text-sm shadow-sm">2</span>
+                        설문 문항
+                    </h2>
+                    <p class="text-sm text-blue-600 ml-10">1(전혀 그렇지 않다) ~ 5(매우 그렇다)</p>
+                </div>
+                <div id="questionsContainer" class="space-y-8"></div>
+            </section>
+
+            <div class="pt-6 border-t border-gray-100 text-center">
+                <button type="submit" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full shadow-lg transform transition hover:-translate-y-1 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    설문 제출하기
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm mt-12">
+        <p>&copy; 2024 School Survey System. All rights reserved.</p>
+    </footer>
+
+    <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 px-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all scale-100">
+            <div class="bg-green-500 p-4 text-center">
+                <div class="mx-auto bg-white w-12 h-12 rounded-full flex items-center justify-center mb-2">
+                    <i class="fa-solid fa-check text-green-500 text-xl"></i>
+                </div>
+                <h3 class="text-white text-xl font-bold">제출 완료!</h3>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-600 mb-4 text-center">설문에 참여해 주셔서 감사합니다.</p>
+                <div class="bg-gray-50 p-4 rounded-lg text-sm text-gray-700 mb-6 space-y-1">
+                    <p><strong>학번:</strong> <span id="modalId"></span></p>
+                    <p><strong>이름:</strong> <span id="modalName"></span></p>
+                    <p><strong>사용 시간:</strong> <span id="modalTime"></span></p>
+                </div>
+                <button onclick="closeModal()" class="w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900 transition">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            "스마트폰(태블릿)을 학습 정보 검색 등 학습에 많이 활용하나요?",
+            "게임, 영상 시청, 웹툰 등 즐거움을 위해 스마트폰을 많이 사용하나요?",
+            "SNS 메신저 등 타인과의 소통을 위해 스마트폰을 많이 사용하나요?",
+            "스마트폰 사용 시간을 스스로 조절하는 것이 어렵다고 느끼나요?",
+            "스마트폰은 내 삶에 꼭 필요한 중요한 도구라고 생각하나요?",
+            "스마트폰이 없으면 불안하거나 초조함을 느끼나요?",
+            "인공지능 발전을 긍정적으로 생각하나요?",
+            "디지털 교재를 주로 사용하나요?",
+            "스마트폰 사용을 줄이기 위해 노력해 본적이 있나요?",
+            "일상생활에서 생성형 AI를 많이 사용하나요?"
+        ];
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            questions.forEach((q, index) => {
+                const qNum = index + 1;
+                const html = `
+                    <div class="bg-white p-4 rounded-lg hover:bg-gray-50 transition duration-200">
+                        <p class="font-medium text-gray-800 mb-4 text-lg">
+                            <span class="text-blue-600 font-bold mr-1">Q${qNum}.</span> ${q}
+                        </p>
+                        <div class="flex justify-between items-center max-w-lg mx-auto mb-2">
+                            ${[1, 2, 3, 4, 5].map(val => `
+                                <label class="radio-label flex flex-col items-center group">
+                                    <input type="radio" name="q${qNum}" value="${val}" required class="radio-input hidden">
+                                    <div class="radio-circle group-hover:border-blue-400 group-hover:text-blue-500 mb-1">
+                                        ${val}
+                                    </div>
+                                </label>
+                            `).join('')}
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-400 max-w-lg mx-auto px-1">
+                            <span>전혀 그렇지 않다</span>
+                            <span>매우 그렇다</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += html;
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', renderQuestions);
+
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // 1. 기본 정보 수집
+            const studentId = document.getElementById('studentId').value;
+            const name = document.getElementById('name').value;
+            const usageTime = document.getElementById('usageTime').value;
+
+            // 2. 답변 데이터 수집
+            const answers = [];
+            for(let i=1; i<=questions.length; i++) {
+                const checked = document.querySelector(`input[name="q${i}"]:checked`);
+                answers.push(checked ? parseInt(checked.value) : 0);
+            }
+
+            // 3. 데이터 객체 생성
+            const surveyData = {
+                id: Date.now(), // 고유 ID (시간값)
+                timestamp: new Date().toLocaleString(),
+                studentId: studentId,
+                name: name,
+                usageTime: usageTime,
+                answers: answers
+            };
+
+            // 4. 로컬 스토리지에 저장 (서버 대신 브라우저 저장소 사용)
+            let storedData = JSON.parse(localStorage.getItem('surveyData')) || [];
+            storedData.push(surveyData);
+            localStorage.setItem('surveyData', JSON.stringify(storedData));
+
+            // 5. 모달 표시
+            document.getElementById('modalId').textContent = studentId;
+            document.getElementById('modalName').textContent = name;
+            document.getElementById('modalTime').textContent = usageTime;
+            document.getElementById('resultModal').classList.remove('hidden');
+        });
+
+        function closeModal() {
+            document.getElementById('resultModal').classList.add('hidden');
+            document.getElementById('surveyForm').reset();
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
